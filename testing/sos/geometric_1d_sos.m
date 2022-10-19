@@ -2,7 +2,7 @@
 %there is a semi-explicit expression for this
 %the fokker-planck equation states that 
 
-%% variables and dynamics
+% variables and dynamics
 t = sdpvar(1,1);
 x = sdpvar(1,1);
 
@@ -11,7 +11,7 @@ sigma = sqrt(2)/2;
 f =  b * x;
 g = sigma * x;
 
-order = 2;
+order = 3;
 d = 2*order;
 
 
@@ -30,7 +30,7 @@ k = sqrt(4/(9*epsilon) - 1); %VP bound
 
 %% Support Sets
 T = 1;
-Xmax = 2.5;
+Xmax = 3;
 Xall = struct('ineq', [t*(T-t); x*(Xmax-x)], 'eq', []);
 
 %% polynomials
@@ -49,7 +49,7 @@ pcost = (1 - 2*phi(3))*p + (phi(1) + lam)*(p^2);
 [plie, conslie, coefflie] = constraint_psatz(-Lv, Xall, [t;x], d);
 [pcost, conscost, coeffcost] = constraint_psatz(v - pcost, Xall, [t;x], d);
 
-cons = [cone(phi, lam); conslie; conscost];
+cons = [cone(phi, lam); conslie; conscost; phi(2)==(k/2)];
 coeff = [coefflie; coeffcost; phi; lam; cv];
 
 opts = sdpsettings('solver', 'mosek');
@@ -57,3 +57,10 @@ opts = sdpsettings('solver', 'mosek');
 
 [sol,u,Q] = solvesos(cons,objective,opts,coeff);
 % , X, vars, d)
+
+%% recovery
+phi_rec = value(phi);
+lam_rec = value(lam);
+v_rec = value(cv)'*mv;
+v0_rec = replace(v_rec, [t; x], [0, x0]);
+obj_rec = value(objective);
