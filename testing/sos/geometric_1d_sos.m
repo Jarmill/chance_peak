@@ -11,27 +11,42 @@ sigma = sqrt(2)/2;
 f =  b * x;
 g = sigma * x;
 
-order = 3;
-d = 2*order;
-
 
 x0 = 0.25;
 
 epsilon = 0.1;
 p = x; %objective
 
+%T = 1, Xmax = 3;
+% order = 1;  %  1.6897
+% order = 2; %   0.7850
+% order = 3; % 0.7737
+% order = 4; %0.7674
+order = 5; %0.7655
+% order = 6; %0.7621 (unknown)
+% order = 7; %  0.7537 (unknown)
+% order = 8; %    0.7469 (unknown)
+
+
+
+
+d = 2*order;
+
 %optimization variables
 phi = sdpvar(3, 1);
 lam = sdpvar(1, 1);
 
 
-% k = sqrt(1/epsilon - 1); %cantelli bound
-k = sqrt(4/(9*epsilon) - 1); %VP bound
+k = sqrt(1/epsilon - 1); %cantelli bound
+% k = sqrt(4/(9*epsilon) - 1); %VP bound
 
 %% Support Sets
-T = 1;
-Xmax = 3;
-Xall = struct('ineq', [t*(T-t); x*(Xmax-x)], 'eq', []);
+% T = 1;
+T = 5;
+% Xmax = 3;
+Xmax = 5;
+% Xall = struct('ineq', [t*(T-t); x*(Xmax-x)], 'eq', []);
+Xall = struct('ineq', [t*(T-t); x], 'eq', []);
 
 %% polynomials
 %polynomial definition
@@ -63,4 +78,4 @@ phi_rec = value(phi);
 lam_rec = value(lam);
 v_rec = value(cv)'*mv;
 v0_rec = replace(v_rec, [t; x], [0, x0]);
-obj_rec = value(objective);
+obj_rec = value(objective)

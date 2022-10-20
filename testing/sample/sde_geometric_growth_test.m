@@ -11,12 +11,16 @@ obj = sde(F, G, 'StartState', x0);    % dX = F(t,X)dt + G(t,X)dW
 
 dt = 1e-3;
 T = 1;
+% T = 5;
+% T = 20;
+% T = 50;
 
 %Options
 Nperiod = ceil(T/dt);
 Antithetic = true;
 % NTrials = 1000;
-NTrials = 200;
+% NTrials = 200;
+NTrials = 500;
 
 [x_smp,t_smp] = simByEuler(obj, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials,...
     'Antithetic', Antithetic);
