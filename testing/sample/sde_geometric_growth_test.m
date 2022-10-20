@@ -1,6 +1,6 @@
 %SDE setup
 %parameters from example 1 of https://arxiv.org/pdf/2208.10752.pdf
-
+rng(25, 'twister');
 b = -0.1;
 sigma = sqrt(2)/2;
 F = @(t,X) b * X;
@@ -15,7 +15,8 @@ T = 1;
 %Options
 Nperiod = ceil(T/dt);
 Antithetic = true;
-NTrials = 1000;
+% NTrials = 1000;
+NTrials = 200;
 
 [x_smp,t_smp] = simByEuler(obj, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials,...
     'Antithetic', Antithetic);

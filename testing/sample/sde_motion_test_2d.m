@@ -10,7 +10,7 @@ x0 = [1; 1];
 obj = sde(F, G, 'StartState', x0);    % dX = F(t,X)dt + G(t,X)dW
 
 dt = 1e-3;
-T =6;
+T =5;
 
 %Options
 Nperiod = ceil(T/dt);
