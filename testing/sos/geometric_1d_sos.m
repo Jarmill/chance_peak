@@ -37,22 +37,24 @@ phi = sdpvar(3, 1);
 lam = sdpvar(1, 1);
 
 
-k = sqrt(1/epsilon - 1); %cantelli bound
-% k = sqrt(4/(9*epsilon) - 1); %VP bound
+% k = sqrt(1/epsilon - 1); %cantelli bound
+k = sqrt(4/(9*epsilon) - 1); %VP bound
 
 %% Support Sets
-% T = 1;
-T = 5;
+T = 1;
+% T = 5;
 % Xmax = 3;
-Xmax = 5;
-% Xall = struct('ineq', [t*(T-t); x*(Xmax-x)], 'eq', []);
-Xall = struct('ineq', [t*(T-t); x], 'eq', []);
+% Xmax = 5;
+Xmax = 10;
+Xall = struct('ineq', [t*(1-t); x*(Xmax-x)], 'eq', []);
+% Xall = struct('ineq', [t*(T-t); x], 'eq', []);
 
 %% polynomials
 %polynomial definition
 [v, cv, mv] = polynomial([t,x], d);
 
-Lv = jacobian(v, t) + jacobian(v, x)*f + g'*hessian(v, x)*g;
+%is this the correct scaling of T?
+Lv = jacobian(v, t) + T*jacobian(v, x)*f + T*g'*hessian(v, x)*g;
 
 v0 = replace(v, [t;x], [0; x0]);
 
