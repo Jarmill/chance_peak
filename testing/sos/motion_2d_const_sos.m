@@ -45,7 +45,7 @@ Xall = struct('ineq', [t*(T-t); x.*(Xmax-x)], 'eq', []);
 %polynomial definition
 [v, cv, mv] = polynomial([t;x], d);
 
-Lv = jacobian(v, t) + jacobian(v, x)*f + g'*hessian(v, x)*g;
+Lv = jacobian(v, t) + jacobian(v, x)*f + 0.5*g'*hessian(v, x)*g;
 
 v0 = replace(v, [t;x], [0; x0]);
 

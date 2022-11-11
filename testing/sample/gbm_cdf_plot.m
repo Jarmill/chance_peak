@@ -31,13 +31,13 @@ figure(11);
 %time interval
 epsilon = 0.1;
 
-x_5_1 = 0.765525507142643;  %order 5, Xmax = 3, T = 1
-x_5_5 = 1.088064660165312; %order 5, Xmax = 3, T = 5
-x_5_all_5 = 1.111474751861115; %order 5, Xmax = inf, T=5
-
-x_5_all_Tscale = 1.300065273747971;
+% x_5_1 = 0.765525507142643;  %order 5, Xmax = 3, T = 1
+% x_5_5 = 1.088064660165312; %order 5, Xmax = 3, T = 5
+% x_5_all_5 = 1.111474751861115; %order 5, Xmax = inf, T=5
+% 
+% x_5_all_Tscale = 1.300065273747971;
 % x_5_cant = 1.706856693288101; %cantelli bound
-pcdf_5 = @(t) logncdf(x_5_1/x0, b*t, sigma*sqrt(t)); 
+% pcdf_5 = @(t) logncdf(x_5_1/x0, b*t, sigma*sqrt(t)); 
 t = linspace(0, T, Nx+1);
 t = t(2:end);
 

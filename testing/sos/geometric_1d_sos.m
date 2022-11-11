@@ -17,7 +17,7 @@ x0 = 0.25;
 epsilon = 0.1;
 p = x; %objective
 
-%T = 1, Xmax = 3;
+%T = 1, Xmax = 3; with no factor of 1/2 in the hessian
 % order = 1;  %  1.6897
 % order = 2; %   0.7850
 % order = 3; % 0.7737
@@ -37,16 +37,17 @@ phi = sdpvar(3, 1);
 lam = sdpvar(1, 1);
 
 
-% k = sqrt(1/epsilon - 1); %cantelli bound
-k = sqrt(4/(9*epsilon) - 1); %VP bound
+k = sqrt(1/epsilon - 1); %cantelli bound
+% k = sqrt(4/(9*epsilon) - 1); %VP bound
 
 %% Support Sets
 T = 1;
 % T = 5;
 % Xmax = 3;
-% Xmax = 5;
-Xmax = 10;
-Xall = struct('ineq', [t*(1-t); x*(Xmax-x)], 'eq', []);
+Xmax = 5;
+% Xmax = 10;
+% Xall = struct('ineq', [t*(1-t); x*(Xmax-x)], 'eq', []);
+Xall = struct('ineq', [t*(T-t); x*(Xmax-x)], 'eq', []);
 % Xall = struct('ineq', [t*(T-t); x], 'eq', []);
 
 %% polynomials
@@ -54,7 +55,7 @@ Xall = struct('ineq', [t*(1-t); x*(Xmax-x)], 'eq', []);
 [v, cv, mv] = polynomial([t,x], d);
 
 %is this the correct scaling of T?
-Lv = jacobian(v, t) + T*jacobian(v, x)*f + T*g'*hessian(v, x)*g;
+Lv = jacobian(v, t) + jacobian(v, x)*f + 0.5*g'*hessian(v, x)*g;
 
 v0 = replace(v, [t;x], [0; x0]);
 
