@@ -11,7 +11,6 @@ sigma = sqrt(2)/2;
 f =  b * x;
 g = sigma * x;
 
-
 x0 = 0.25;
 
 epsilon = 0.1;

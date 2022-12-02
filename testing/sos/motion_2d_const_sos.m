@@ -1,6 +1,4 @@
-%geometric brownian motion
-%there is a semi-explicit expression for this
-%the fokker-planck equation states that 
+%2d flow motion when drift term is constant
 
 % variables and dynamics
 t = sdpvar(1,1);
