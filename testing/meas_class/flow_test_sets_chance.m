@@ -36,23 +36,29 @@ init_mom_handle = @(d)  LebBoxMom_time_delta(d, box, 0, 0, 1);
 
 %% location support 
 
-lsupp = loc_support(vars);
-% lsupp = chance_support(vars, 0.05);
+% lsupp = loc_support(vars);
+lsupp = chance_support(vars, 0.05);
 % lsupp = lsupp.set_box(4);
 lsupp = lsupp.set_box([-1, 3; -1.5, 2]);
 % lsupp.X_init = X0;
 lsupp.Tmax = 10;
 lsupp.mom_init = init_mom_handle;
+lsupp.bound_type = 'mean';
 %% testing peak estimation
 
 %dynamics
 f = [x(2); -x(1) + (1/3).* x(1).^3 - x(2)];
+g = [0; 0];
+
+dyn = struct('f', f, 'g', g);
+
 objective = -x(2);
 
 SOLVE = 1;
 REC = 1;
 % if SOLVE
-PM = peak_manager(lsupp, f, objective);
+% PM = peak_manager(lsupp, f, objective);
+PM = chance_peak_manager(lsupp, dyn, objective);
 
 %generate constraints
 order = 3; %starting X0=C0, order 2: 0.5723, order 3: 0.5532

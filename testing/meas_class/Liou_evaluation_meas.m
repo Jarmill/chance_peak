@@ -9,10 +9,12 @@ vars = struct('t', t, 'x', x);
 % dynamics
 f = [1 3; 4 -1]*x;
 g = [1; x(2)+1];
+% g = [0; 1];
+% g = [0; 0];
 
 dyn = struct('f', f, 'g', g);
 
-d = 2;
+d = 4;
 
 % location support 
 lsupp = chance_support(vars, 0.05);
@@ -22,13 +24,21 @@ lsupp = lsupp.set_box([-1, 3; -1.5, 2]);
 lsupp.Tmax = 10;
 % lsupp.mom_init = init_mom_handle;
 
-Xsupp = lsupp.supp_sys();
+% Xsupp = lsupp.supp_sys();
 
-SS_std = subsystem(lsupp, f);
-SS = subsystem_sde(lsupp, dyn);
+p = x(1);
 
-% mb = meas_base(vars, Xsupp);
-% mb.mom_lie(d, [t; x], f)
-% mb.mom_hess(d, [t; x], g)
+loc = location_sde(lsupp, dyn, p);
 
-Ay = SS.cons_liou(3)
+[objective, cons_eq, cons_ineq, len_dual] = loc.all_cons(d);
+
+cons_eq
+
+% SS_std = subsystem(lsupp, f);
+% SS = subsystem_sde(lsupp, dyn);
+% 
+% % mb = meas_base(vars, Xsupp);
+% % mb.mom_lie(d, [t; x], f)
+% % mb.mom_hess(d, [t; x], g)
+% 
+% Ay = SS.cons_liou(3)

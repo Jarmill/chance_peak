@@ -5,8 +5,12 @@ classdef chance_support < loc_support
     properties
         epsilon; %probability bound
                  %peak is achieved at probability (1-epsilon)
-                 
-        bound_vp = 0; %either Cantelli or VP bounds allowed (in this implementation)
+
+        bound_type = 'cantelli'; %either mean, Cantelli or VP bounds allowed (in this implementation)
+        %'mean':  bound the max mean of the distribution, no fancy math
+        %'cantelli': Cantelli bound on value-at-risk
+        %'vp': Vysochanskij-Petunin bound on value-at-risk (requires unimodal
+        %distributions and epsilon < 1/6)
     end
     
     methods
@@ -29,10 +33,12 @@ classdef chance_support < loc_support
                 epsilon = obj.epsilon;
             end
             
-            if obj.bound_vp
+            if strcmp(obj.bound_type, 'vp')
                 r = sqrt(4/(9*epsilon) - 1);
-            else
+            elseif strcmp(obj.bound_type, 'cantelli')
                 r = sqrt(1/(epsilon) - 1);
+            else %default to mean (effectively epsilon = 0.5)
+                r=0;
             end
             
         end
