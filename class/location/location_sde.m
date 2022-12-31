@@ -23,6 +23,14 @@ classdef location_sde < location_interface
             
             obj@location_interface(loc_supp, dyn.f, objective, id);
            
+            
+            if ~loc_supp.TIME_INDEP % && obj.supp.SCALE_TIME
+                %scale for time if time is a variable
+                Tmax = loc_supp.Tmax;
+                dyn.f = Tmax * dyn.f;
+                dyn.g = Tmax * dyn.g;
+                loc_supp.Tmax = 1;
+            end
             %only a single SDE system
             obj.sys = {subsystem_sde(loc_supp, dyn, 1, id)};
         end

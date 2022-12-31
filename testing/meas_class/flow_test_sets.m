@@ -55,7 +55,7 @@ REC = 1;
 PM = peak_manager(lsupp, f, objective);
 
 %generate constraints
-order = 3; %starting X0=C0, order 2: 0.5723, order 3: 0.5532
+order = 2; %starting X0=C0, order 2: 0.5723, order 3: 0.5532
 d = 2*order;
 sol = PM.run(order, 10);
 disp(sol.obj_rec)
