@@ -18,7 +18,7 @@ classdef chance_support < loc_support
             %CHANCE_SUPPORT Construct an instance of this class
             %   Detailed explanation goes here
             if nargin < 2
-                epsilon = 0.01;
+                epsilon = 0.1;
             end
             if nargin < 3
                 loc_ref = [];
