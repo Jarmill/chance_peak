@@ -13,7 +13,7 @@ classdef chance_peak_manager < manager_interface
                 objective = [];
             end
 
-            loc_curr = location_sde(lsupp, dyn, objective);
+            loc_curr = location_sde(chance_supp, dyn, objective);
             
             obj@manager_interface(loc_curr);
                                  
@@ -41,10 +41,9 @@ classdef chance_peak_manager < manager_interface
             
             %objective relations (specific care needs to be taken for
             %chance-peak)
-            [objective, cons_eq_obj, cons_ineq_obj] = obj.objective_process(obj_max);
+            [objective, cons_eq_obj] = obj.objective_process(obj_max);
             
             cons_eq = [cons_eq; cons_eq_obj];
-            cons_ineq = [cons_ineq; cons_ineq_obj];
             
             %finalize moment constraints
             
@@ -69,13 +68,13 @@ classdef chance_peak_manager < manager_interface
             mom_con = [cons_eq; cons_ineq; mass_init_con; mass_occ_con];            
         end    
         
-        function [objective, cons_eq_obj] = obj.objective_process(obj_max)
+        function [objective, cons_eq_obj] = objective_process(obj, obj_max)
             %OBJECTIVE_PROCESS implement the SOC constraints for the
             %chance-peak bound
             
             p = obj_max(1);
             p2 = obj_max(2);
-            r = obj.supp.get_r_const(obj, epsilon);
+            r = obj.loc.supp.get_r_const();
             
             if r > 0
                 %there is some funky chance-peak business going on
@@ -89,11 +88,10 @@ classdef chance_peak_manager < manager_interface
                 %[1+p^2,  1-p^2,   2z,  2p;
                 % 1-p^2,      1,    0,   0;
                 %    2z,      0     1,   0;
-                %    2p,      0,    0,   1];
+                %    2p,      0,    0,   1]  is PSD;
                 
                 mpol('s', 3)
                 mus = meas(s);
-                z = s(2);
                 cons_eq_obj = [(mass(mus)==1+p2);
                                 mom(s(1)) == 1-p2;
                                 mom(s(3)) == 2*p;

@@ -92,10 +92,13 @@ classdef chance_peak_manager < manager_interface
                 
                 mpol('s', 3)
                 mus = meas(s);
+                
+                svector = reshape(mom(s*s'), [], 1);
+                seye = reshape(eye(3), [], 1);
                 cons_eq_obj = [(mass(mus)==1+p2);
                                 mom(s(1)) == 1-p2;
                                 mom(s(3)) == 2*p;
-                                mom(s*s') == eye(3)];
+                                svector==seye];
                             
                 objective = obj_max(1) + mom(s(2))*(r/2);
             else
