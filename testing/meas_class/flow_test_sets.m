@@ -36,7 +36,8 @@ init_mom_handle = @(d)  LebBoxMom_time_delta(d, box, 0, 0, 1)
 
 %% location support 
 
-lsupp = loc_support(vars);
+% lsupp = loc_support(vars);
+lsupp = chance_support(vars, 0.05);
 % lsupp = lsupp.set_box(4);
 lsupp = lsupp.set_box([-1, 3; -1.5, 2]);
 % lsupp.X_init = X0;
