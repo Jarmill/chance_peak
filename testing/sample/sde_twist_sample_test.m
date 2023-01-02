@@ -23,7 +23,7 @@ T =5;
 %Options
 Nperiod = ceil(T/dt);
 Antithetic = true;
-NTrials = 200;
+NTrials = 250;
 
 [x_smp,t_smp] = simByEuler(obj, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials,...
     'Antithetic', Antithetic);
@@ -53,6 +53,16 @@ ylabel('$x_2$', 'interpreter', 'latex')
 zlabel('$x_3$', 'interpreter', 'latex')
 title('Stochastic Twist System', 'FontSize', 14)
 view(3)
+
+
+%% plot the patches
+chance_p = [0.820253508023993;0.975507232859090];
+xl = xlim;
+yl = ylim;
+patch(xl([1,1,2,2,1]), yl([1,2,2,1,1]), chance_p(1)*ones(1, 5), 'r', 'EdgeColor', 'None', 'FaceAlpha', 0.5)
+patch(xl([1,1,2,2,1]), yl([1,2,2,1,1]), chance_p(2)*ones(1, 5), 'r', 'EdgeColor', 'None')
+
+
 % plot(xlim, [1, 1]*[-0.874424669027551], 'r--', 'LineWidth', 3)
 % plot(xlim, [1, 1]*-[1.16420596964602], 'r', 'LineWidth', 3)
 
