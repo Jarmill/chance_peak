@@ -37,6 +37,10 @@ classdef subsystem_sde <subsystem_interface
             if isfield(dyn, 'jump')
                 obj.jump = dyn.jump;
             end
+            
+            if isfield(obj.vars, 'y')
+                obj.vars = rmfield(obj.vars, 'y');
+            end
         end
         
         %% Constraints                       

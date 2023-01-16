@@ -1,15 +1,10 @@
-classdef location_sde < location_interface
-    %LOCATION_SDE Summary of this class goes here
-    %   Detailed explanation goes here
+classdef location_distance_sde < location_sde & location_distance_interface
+    %LOCATION_DISTANCE_SDE 
+    %perform distance estimation with an SDE
     
-    properties
-        varnames = {'t', 'x'};
-        g = [];
-        jump = [];
-    end
-    
+
     methods
-        function obj = location_sde(loc_supp, dyn, objective, id)
+        function obj = location_distance_sde(unsafe_supp, dyn, objective, id)
             %LOCATION_SDE Construct an instance of this class
             %   Detailed explanation goes here
             if nargin < 3             
@@ -21,18 +16,12 @@ classdef location_sde < location_interface
                 id = [];            
             end
             
-            obj@location_interface(loc_supp, dyn.f, objective, id);
-           
+            objective = 0;
             
-            if ~loc_supp.TIME_INDEP % && obj.supp.SCALE_TIME
-                %scale for time if time is a variable
-                Tmax = loc_supp.Tmax;
-                dyn.f = Tmax * dyn.f;
-                dyn.g = Tmax * dyn.g;
-                loc_supp.Tmax = 1;
-            end
-            %only a single SDE system
-            obj.sys = {subsystem_sde(loc_supp, dyn, 1, id)};
+            obj@location_sde(unsafe_supp, dyn, objective, id);
+            obj@location_distance_interface(unsafe_supp, id);
+            
+%             obj.varnames = [obj.varnames, {'y'}];
         end
         
         %% Constraints
@@ -46,21 +35,15 @@ classdef location_sde < location_interface
             %   cons_ineq: inequality constraints (objective)
             
             %gather all constraints together
-            liou = obj.liou_con(d);
-            len_liou = length(liou);
            
-            [objective, cons_ineq, cons_eq] = obj.objective_con();
+            [objective, cons_eq, cons_ineq, len_dual] = all_cons@location_sde(obj, d);
             
-            cons_ineq = [];
+            marg = obj.marg_wass_con(d);
+            
+            cons_eq = [cons_eq; marg==0];
 
             %package up the output
-            len_dual = struct;
-            len_dual.v = len_liou;
-%             len_dual.beta = length(cons_ineq);
-            
-            %ensure this is the correct sign
-%             cons_eq = [-liou]==0;   
-            cons_eq = [(-liou)==0; cons_eq];
+            len_dual.w = length(marg);                       
         end      
         
         function [len_out] = len_eq_cons(obj)
@@ -69,16 +52,9 @@ classdef location_sde < location_interface
             len_out = obj.len_dual.v;
         end
         
-        function vars_out = get_vars_end(obj)
-            %GET_VARS_END variables at endpoint measures
-            %   initial and terminal, without time-dependent
-            vars_out = [obj.vars.t; obj.vars.x];
-        end
-        
-        
-        
         function [obj_max, obj_con_ineq, obj_con_eq] = objective_con(obj, objective)
-            %OBJECTIVE_CON deal with the objective, which may be maximin
+            %OBJECTIVE_CON deal with the distance objective
+            %bad code, violates Don't Repeat Yourself principles
             %                        
             %Inputs:
             %   objective:  the objective that should be maximized
@@ -96,7 +72,7 @@ classdef location_sde < location_interface
             %TODO: include support for putting objectives on initial and
             %occupation measures as well as the terminal measure
             if nargin == 1
-                objective = obj.objective;
+                objective = obj.get_objective();
             end
                                     
             obj_con_eq = [];
@@ -106,18 +82,19 @@ classdef location_sde < location_interface
             %p(x) + r*sqrt(p(x)^2 - p(x))
             obj_subs_2 = 0;
             
-            var_end = obj.var_index(obj.vars, {'t', 'x'});
+%             var_dist = obj.var_index(obj.vars, {'x', 'y'});
+            var_dist = [obj.vars.x; obj.vars.y];
             if isempty(objective)
                 obj_max = [0; 0];
             elseif length(objective) == 1    
-                obj_subs = obj.term.var_sub_mom(var_end, objective);                
+                obj_subs = obj.wass{1}.mom_objective(objective, var_dist);                
 %                 obj_max = (obj_subs);                            
                 
-                obj_subs_2 = obj.term.var_sub_mom(var_end, objective^2);
+                obj_subs_2 = obj.wass{1}.mom_objective(objective^2, var_dist);
                 
                 obj_max = [obj_subs; obj_subs_2];
             else
-                obj_subs = obj.term.var_sub_mom(var_end, objective);
+                obj_subs = obj.wass{1}.mom_objective(objective, var_dist);
                 q_name = ['q_', num2str(obj.id)];
                 mpol(q_name, 1, 1);
                 q = eval(q_name);
@@ -133,38 +110,24 @@ classdef location_sde < location_interface
             end            
             
             %call the chance-peak function
-            
-
         end
 
+        
+        function obj_out = get_objective(obj)
+            %return the objective to maximize (this is a chance-peak
+            %maximizing SDE)
+            obj_out = -obj.dist;
+        end
         
         function supp_con_out = supp_con(obj)
             %SUPP_CON get support constraints of measures
             
             
             %terminal measure support 
-            if ~isempty(obj.term)
-                term_supp =  obj.term.supp();
-            else
-                term_supp =  [];
-            end
+            supp_con_out = supp_con@location_sde(obj);
+            wass_con = supp_con@location_distance_interface(obj);
             
-            %initial measure support 
-            if ~isempty(obj.init)
-                init_supp =  obj.init.supp();
-            else
-                init_supp =  [];
-            end
-            
-            %subsystem measure support
-            sys_supp = [];
-%             for i = 1:length(obj.sys)
-                sys_supp = [obj.sys{1}.get_supp()];
-%             end
-            
-            supp_con_out = [init_supp;
-                            term_supp;
-                            sys_supp];
+            supp_con_out = [supp_con_out; wass_con];
         end
         
         
@@ -190,11 +153,11 @@ classdef location_sde < location_interface
              
              %auxiliary function v
              v_coeff = rec_eq(1:obj.len_dual.v);
-             monom = mmon(obj.get_vars_end, 0, d);
+             monom = mmon(obj.get_vars, 0, d);
              obj.dual.v = v_coeff'*monom;
              
              %iterate through all subsystems
-             monom_all = mmon(obj.get_vars_end(), 0, d);
+             monom_all = mmon(obj.get_vars(), 0, d);
              
              %TODO: confirm that all abscont relations have the same length
              len_monom_all = length(monom_all);
@@ -221,7 +184,15 @@ classdef location_sde < location_interface
              
         end     
         
-        
+        function [optimal, mom_out, corner] = recover(obj, tol)
+            %recovery: do this later
+           if nargin < 2
+               tol = 0;
+           end
+           optimal = 0;
+           mom_out = [];
+           corner = [];
+        end
         %% Sampling ???
     end
 end
