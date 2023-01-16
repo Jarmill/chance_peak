@@ -1,5 +1,6 @@
-classdef chance_support < loc_support
-    %CHANCE_SUPPORT Summary of this class goes here
+classdef (Abstract) chance_support_interface
+    %CHANCE_SUPPORT_INTERFACE Allow for a location support to contain a
+    %chance-constraint
     %   Detailed explanation goes here
     
     properties
@@ -14,16 +15,12 @@ classdef chance_support < loc_support
     end
     
     methods
-        function obj = chance_support(vars, epsilon, loc_ref)
+        function obj = chance_support_interface(epsilon)
             %CHANCE_SUPPORT Construct an instance of this class
             %   Detailed explanation goes here
-            if nargin < 2
+            if nargin < 1
                 epsilon = 0.1;
             end
-            if nargin < 3
-                loc_ref = [];
-            end
-            obj@loc_support(vars, loc_ref);
             obj.epsilon = epsilon;
         end
         
