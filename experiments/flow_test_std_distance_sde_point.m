@@ -39,10 +39,10 @@ unsafe_cons = [c1f; c2f];
 lsupp = chance_distance_support(vars, epsilon);
 % lsupp = lsupp.set_box(4);
 % lsupp = lsupp.set_box([-1, 3; -1.5, 2]);
-lsupp = lsupp.set_box([-1.5, 1.5; -1.5, 1.5]);
+lsupp = lsupp.set_box([-1.1, 1.75; -1.5, 1.5]);
 lsupp.X_init = X0;
 lsupp.Tmax = 5;
-lsupp.X_unsafe = [c1f; c2f] >= 0;
+lsupp.X_unsafe = unsafe_cons >= 0;
 lsupp.dist = (x-y)'*(x-y);
 lsupp.epsilon = 0.15;
 
@@ -77,7 +77,7 @@ order_list = 1:6;
 
 % epsilon_list = [0.15];
 % order_list = 1:4;
-% order_list = 4;
+% order_list = 5;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
 status = zeros(length(epsilon_list)+1, length(order_list));
 
