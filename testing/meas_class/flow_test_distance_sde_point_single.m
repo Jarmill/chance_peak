@@ -14,7 +14,7 @@ X0 = [1; 1];
 
 %chance bound
 % epsilon = 0.1;
-epsilon = 0.05;
+epsilon = 0.15;
 
 
 %unsafe set
@@ -43,7 +43,7 @@ lsupp.X_init = X0;
 lsupp.Tmax = 5;
 lsupp.X_unsafe = [c1f; c2f] >= 0;
 lsupp.dist = (x-y)'*(x-y);
-lsupp.epsilon = 0.15;
+% lsupp.epsilon = ep;
 
 
 CHANCE = 1;
@@ -69,7 +69,7 @@ SOLVE = 1;
 PM = chance_distance_manager(lsupp, dyn);
 
 %generate constraints
-order = 5; %starting X0=C0, order 2: 0.5723, order 3: 0.5532
+order = 4; %starting X0=C0, order 2: 0.5723, order 3: 0.5532
 d = 2*order;
 sol = PM.run(order, 5);
 disp(sol.obj_rec)
