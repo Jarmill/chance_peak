@@ -20,19 +20,34 @@ classdef location_sde < location_interface
             if nargin < 4
                 id = [];            
             end
-            
+
+            if ~iscell(dyn.f)
+                dyn.f = {dyn.f};
+            end
+
+            if ~iscell(dyn.g)
+                dyn.f = {dyn.f};
+            end
+
             obj@location_interface(loc_supp, dyn.f, objective, id);
            
             
             if ~loc_supp.TIME_INDEP % && obj.supp.SCALE_TIME
                 %scale for time if time is a variable
                 Tmax = loc_supp.Tmax;
-                dyn.f = Tmax * dyn.f;
-                dyn.g = Tmax * dyn.g;
+                for i = 1:length(dyn.f)
+                    dyn.f{i} = Tmax * dyn.f{i};
+                    dyn.g{i} = Tmax * dyn.g{i};
+                end
                 loc_supp.Tmax = 1;
             end
             %only a single SDE system
-            obj.sys = {subsystem_sde(loc_supp, dyn, 1, id)};
+
+            obj.sys = cell(length(dyn.f), 1);
+            for i = 1:length(dyn.f)
+                dyn_curr = struct('f', dyn.f{i}, 'g', dyn.g{i});
+                obj.sys{i} = subsystem_sde(loc_supp, dyn_curr, i, id);
+            end
         end
         
         %% Constraints
@@ -158,9 +173,9 @@ classdef location_sde < location_interface
             
             %subsystem measure support
             sys_supp = [];
-%             for i = 1:length(obj.sys)
-                sys_supp = [obj.sys{1}.get_supp()];
-%             end
+            for i = 1:length(obj.sys)
+                sys_supp = [obj.sys{i}.get_supp()];
+            end
             
             supp_con_out = [init_supp;
                             term_supp;

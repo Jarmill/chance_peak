@@ -39,8 +39,11 @@ objective = -x(2);
 % PM = peak_manager(lsupp, f, objective);
 PM = chance_peak_manager(lsupp, dyn, objective);
 
+% epsilon_list = [0.15; 0.1; 0.05];
+% order_list = 1:6;
+
 epsilon_list = [0.15; 0.1; 0.05];
-order_list = 1:6;
+order_list = 4;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
 
 
