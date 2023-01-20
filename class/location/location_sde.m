@@ -174,7 +174,7 @@ classdef location_sde < location_interface
             %subsystem measure support
             sys_supp = [];
             for i = 1:length(obj.sys)
-                sys_supp = [obj.sys{i}.get_supp()];
+                sys_supp = [sys_supp; obj.sys{i}.get_supp()];
             end
             
             supp_con_out = [init_supp;

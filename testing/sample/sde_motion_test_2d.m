@@ -31,8 +31,7 @@ figure(1)
 clf
 hold on
 for i = 1:NTrials
-%     plot3(t_smp, x_smp(:, 1, i), x_smp(:, 2, i));
-%     plot(x_smp(:, 1, i), x_smp(:, 2, i));
+
 if i > (NTrials - N_highlight)
     plot(x_smp(:, 1, i), x_smp(:, 2, i), 'color', c(NTrials-i+1, :), 'LineWidth', 2);
 else
@@ -40,7 +39,6 @@ else
 end
 end
 scatter(x0(1), x0(2), 200, 'ko')
-% titlestr = sprintf('dx = %0.2f x dt + %0.4f x dw', b, sigma);
 
 xlabel('$x_1$', 'interpreter', 'latex')
 ylabel('$x_2$', 'interpreter', 'latex')

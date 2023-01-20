@@ -9,6 +9,14 @@ classdef subsystem_sde <subsystem_interface
         g = 0;
         jump = [];
     end
+
+    properties(Access = protected)
+        %use private properties for numeric function evaluations
+        %object-oriented matlab is slow with public variables 
+        %
+        %TODO: check if protected is also slow
+        g_;
+    end
     
     methods
         function obj = subsystem_sde(loc_supp, dyn, sys_id, loc_id)
@@ -41,6 +49,8 @@ classdef subsystem_sde <subsystem_interface
             if isfield(obj.vars, 'y')
                 obj.vars = rmfield(obj.vars, 'y');
             end
+
+            obj.g_ = dyn.g;
         end
         
         %% Constraints                       
@@ -57,6 +67,14 @@ classdef subsystem_sde <subsystem_interface
            
             
         end       
+
+        %% sampler
+
+        function g_out = g_eval(obj, data)
+            %data: [t, x, th, w, b] as required            
+            g_out = eval(obj.g_, obj.get_vars(), data);
+        end
+        
         
         %% Dual Recovery 
         function obj = dual_process(obj, v, zeta)
