@@ -26,7 +26,7 @@ classdef location_sde < location_interface
             end
 
             if ~iscell(dyn.g)
-                dyn.f = {dyn.f};
+                dyn.g= {dyn.g};
             end
 
             obj@location_interface(loc_supp, dyn.f, objective, id);

@@ -37,6 +37,7 @@ dyn.g = {g1, g2};
 % dyn = struct('f', {f1, f2}, 'g', {g1, g2});
 
 objective = -x(2);
+% objective = -x(1);
 
 SOLVE = 1;
 
@@ -46,8 +47,8 @@ PM = chance_peak_manager(lsupp, dyn, objective);
 
 epsilon_list = [0.15; 0.1; 0.05];
 % epsilon_list = [0.15];
-% order_list = 1:6;
-order_list = 1:3;
+order_list = 1:6;
+% order_list = 1:3;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
 status = zeros(length(epsilon_list)+1, length(order_list));
 
@@ -66,21 +67,21 @@ end
 
 disp(peak_estimate)
 
-% %then do the chance-peak with a VP bound
-% for e = 1:length(epsilon_list)
-% % for e=1:1    
-%     lsupp.bound_type = 'vp';
-% %     lsupp.bound_type = 'cantelli';
-%     lsupp.epsilon = epsilon_list(e);
-%     for i = 1:length(order_list)
-%         PM = chance_peak_manager(lsupp, dyn, objective);
-%         sol = PM.run(order_list(i));
-%         peak_estimate(e+1, i) = sol.obj_rec;
-%          status(e+1, i) = sol.status;
-%          if SAVE
-%     save('lin_test_switched_test.mat', 'peak_estimate','status',  'order_list', 'epsilon_list');
-%          end
-%     end
-% end
+%then do the chance-peak with a VP bound
+for e = 1:length(epsilon_list)
+% for e=1:1    
+    lsupp.bound_type = 'vp';
+%     lsupp.bound_type = 'cantelli';
+    lsupp.epsilon = epsilon_list(e);
+    for i = 1:length(order_list)
+        PM = chance_peak_manager(lsupp, dyn, objective);
+        sol = PM.run(order_list(i));
+        peak_estimate(e+1, i) = sol.obj_rec;
+         status(e+1, i) = sol.status;
+         if SAVE
+    save('lin_test_switched_test.mat', 'peak_estimate','status',  'order_list', 'epsilon_list');
+         end
+    end
+end
 
 
