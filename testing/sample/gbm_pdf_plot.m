@@ -10,18 +10,18 @@ x0 = 0.25;
 % T = 5;
 T = 10;
 % Nt = 50;
-Nt = 100;
+Nt = 400;
 t = linspace(0, T, Nt+1);
 %the distribution at time 0 is a dirac-delta
 t = t(2:end);
 
 %fokker planck equation from https://www.mdpi.com/1099-4300/22/12/1432/htm
 p = @(t, x) lognpdf(x/x0, b*t, sigma*sqrt(t));
-Nx = 60;
+Nx = 120;
 Xmax = 5;
 
 % x=linspace(0, Xmax, Nx);
-x = logspace(-5, log10(Xmax), Nx);
+x = logspace(-6, log10(Xmax), Nx);
 
 pX = zeros(Nx, Nt);
 
@@ -31,7 +31,7 @@ end
 
 [tt, xx] = meshgrid(t, x);
 
-figure(1)
+figure(3)
 clf
 subplot(1, 2, 1)
 surf(tt, xx, log(pX));
@@ -39,6 +39,9 @@ zlim([-10, 1])
 
 subplot(1, 2, 2)
 surf(tt, xx, pX)
+xlabel('t')
+ylabel('x')
+zlabel('p_t(x)')
 
 
 % F = @(t,X) b * X;

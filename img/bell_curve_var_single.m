@@ -3,7 +3,8 @@ N = 201;
 
 mu = 0;
 sigma = 1;
-epsilon = 0.05;
+% epsilon = 0.05;
+epsilon = 0.1;
 
 
 t = linspace(-B, B, N);

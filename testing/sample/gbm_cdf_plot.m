@@ -42,7 +42,7 @@ t = linspace(0, T, Nx+1);
 t = t(2:end);
 
 % pt = zeros(size(t));
-pt = pcdf_5(t);
+% pt = pcdf_5(t);
 % for i = 1:Nx
 % %     pt(i)
 %     pt_curr = pcdf_5(t(i));

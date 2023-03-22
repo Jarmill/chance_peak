@@ -53,7 +53,7 @@ PM = chance_peak_manager(lsupp, dyn, objective);
 epsilon_list = [0.15; 0.1; 0.05];
 order_list = 1:6;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
-
+solver_time = zeros(length(epsilon_list)+1, length(order_list));
 
 %start with the mean
 for i = 1:length(order_list)
@@ -61,7 +61,8 @@ for i = 1:length(order_list)
     PM = chance_peak_manager(lsupp, dyn, objective);
     sol = PM.run(order_list(i));
     peak_estimate(1, i) = sol.obj_rec;
-    save('twist_sde_test.mat', 'peak_estimate', 'order_list', 'epsilon_list');
+    solver_time(1, i) = sol.solver_time;
+    save('twist_sde_test.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
 end
 
 %then do the chance-peak with a VP bound
@@ -73,7 +74,8 @@ for e = 1:length(epsilon_list)
         PM = chance_peak_manager(lsupp, dyn, objective);
         sol = PM.run(order_list(i));
         peak_estimate(e+1, i) = sol.obj_rec;
-        save('twist_sde_test.mat', 'peak_estimate', 'order_list', 'epsilon_list');
+        solver_time(e+1, i) = sol.solver_time;
+        save('twist_sde_test.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
     end
 end
 

@@ -17,7 +17,8 @@ T =5;
 %Options
 Nperiod = ceil(T/dt);
 Antithetic = true;
-NTrials = 1000;
+% NTrials = 10000;
+NTrials = 500;
 
 [x_smp,t_smp] = simByEuler(obj, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials,...
     'Antithetic', Antithetic);
