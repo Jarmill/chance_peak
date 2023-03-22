@@ -51,6 +51,7 @@ order_list = 1:6;
 % order_list = 1:3;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
 status = zeros(length(epsilon_list)+1, length(order_list));
+solver_time = zeros(length(epsilon_list)+1, length(order_list));
 
 
 %start with the mean
@@ -60,8 +61,9 @@ for i = 1:length(order_list)
     sol = PM.run(order_list(i));
     peak_estimate(1, i) = sol.obj_rec;
      status(1, i) = sol.status;
+     solver_time(1, i) = sol.solver_time;
      if SAVE
-    save('lin_test_switched_test.mat', 'peak_estimate', 'status', 'order_list', 'epsilon_list');
+    save('lin_test_switched_test_time.mat', 'peak_estimate', 'status', 'order_list', 'epsilon_list', 'solver_time');
      end
 end
 
@@ -78,8 +80,9 @@ for e = 1:length(epsilon_list)
         sol = PM.run(order_list(i));
         peak_estimate(e+1, i) = sol.obj_rec;
          status(e+1, i) = sol.status;
+         solver_time(e+1, i) = sol.solver_time;
          if SAVE
-    save('lin_test_switched_test.mat', 'peak_estimate','status',  'order_list', 'epsilon_list');
+    save('lin_test_switched_test_time.mat', 'peak_estimate','status',  'order_list', 'epsilon_list', 'solver_time');
          end
     end
 end
