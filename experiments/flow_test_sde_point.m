@@ -18,6 +18,7 @@ X0 = [1; 1];
 lsupp = chance_support(vars);
 % lsupp = lsupp.set_box(4);
 % lsupp = lsupp.set_box([-1, 3; -1.5, 2]);
+% lsupp = lsupp.set_box([-1, 1.5; -1.5, 1.5]);
 lsupp = lsupp.set_box([-1, 1.5; -1.5, 1.5]);
 lsupp.X_init = X0;
 lsupp.Tmax = 5;
