@@ -1,3 +1,4 @@
+%requires https://github.com/Jarmill/distance
 mset clear
 clear all
 %% variables
@@ -80,6 +81,7 @@ order_list = 1:6;
 % order_list = 5;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
 status = zeros(length(epsilon_list)+1, length(order_list));
+solver_time = zeros(length(epsilon_list)+1, length(order_list));
 
 
 %start with the mean
@@ -89,7 +91,8 @@ for i = 1:length(order_list)
     sol = PM.run(order_list(i), T);
     peak_estimate(1, i) = sol.obj_rec;
     status(1, i) = sol.status;
-    save('flow_distance_sde_test.mat', 'peak_estimate', 'order_list', 'epsilon_list');
+    solver_time(1, i) = sol.solver_time;
+    save('flow_distance_sde_test_time.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
 end
 
 %then do the chance-peak with a VP bound
@@ -102,7 +105,8 @@ for e = 1:length(epsilon_list)
         sol = PM.run(order_list(i), T);
         peak_estimate(e+1, i) = sol.obj_rec;
         status(e+1, i) = sol.status;
-        save('flow_distance_sde_test.mat', 'peak_estimate', 'order_list', 'epsilon_list');
+        solver_time(e+1, i) = sol.solver_time;
+        save('flow_distance_sde_test_time.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
     end
 end
 
