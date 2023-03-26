@@ -23,3 +23,7 @@ hold on
 plot(t_smp, q_smp)
 plot(t_smp, max_smp, 'k')
 xlim([0, 5])
+title('Quantile Bounds for Fig 1', 'Fontsize', 16)
+xlabel('t')
+ylabel('VaR(-x_2(t))')
+legend({'\epsilon=0.5', '\epsilon=0.15', '\epsilon=0.1', '\epsilon=0.05', 'max'}, 'location', 'northeast')
