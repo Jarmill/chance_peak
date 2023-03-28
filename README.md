@@ -1,2 +1,4 @@
 # chance_peak
-Probabilistic peak estimation: there is a >1-epsilon chance that a state function applied to a dynamical system is lower than a given bound at each point in time. Based on the theory of value-at-risk approximations.
+
+Peak value-at-risk estimation. What is the maximum value of a state function p(x) along Stochastic Differential Equation (SDE) trajectories such that there exists an epsilon-probability of exceeding this bound at some particular time?
+
