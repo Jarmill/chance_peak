@@ -62,7 +62,7 @@ classdef (Abstract) chance_manager_interface < handle
             p2 = obj_max(2);
             r = obj.loc.supp.get_r_const();
             
-            if r > 0
+            if obj.loc.supp.epsilon ~= 0.5
                 %there is some funky chance-peak business going on
                 %need to add the SOC constraint now
                 

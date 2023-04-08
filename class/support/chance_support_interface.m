@@ -12,6 +12,8 @@ classdef (Abstract) chance_support_interface
         %'cantelli': Cantelli bound on value-at-risk
         %'vp': Vysochanskij-Petunin bound on value-at-risk (requires unimodal
         %distributions and epsilon < 1/6)
+        
+        p_supp = []; %bounds on p inside X (if needed)
     end
     
     methods

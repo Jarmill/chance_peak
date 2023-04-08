@@ -1,6 +1,6 @@
 classdef chance_peak_manager < manager_interface & chance_manager_interface
     %CHANCE_PEAK_MANAGER manager for probabalistic (chance-based) peak
-    %estimation. Next step: add SDE dynamics
+    %estimation. Next step: add Levy dynamics
     
     methods
         function obj = chance_peak_manager(chance_supp, dyn, objective)

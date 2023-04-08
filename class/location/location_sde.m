@@ -64,7 +64,7 @@ classdef location_sde < location_interface
             liou = obj.liou_con(d);
             len_liou = length(liou);
            
-            [objective, cons_ineq, cons_eq] = obj.objective_con();
+            [objective, cons_ineq, cons_eq] = obj.objective_con(d);
             
             cons_ineq = [];
 
@@ -92,7 +92,7 @@ classdef location_sde < location_interface
         
         
         
-        function [obj_max, obj_con_ineq, obj_con_eq] = objective_con(obj, objective)
+        function [obj_max, obj_con_ineq, obj_con_eq] = objective_con(obj, d, objective)
             %OBJECTIVE_CON deal with the objective, which may be maximin
             %                        
             %Inputs:
@@ -110,7 +110,7 @@ classdef location_sde < location_interface
             
             %TODO: include support for putting objectives on initial and
             %occupation measures as well as the terminal measure
-            if nargin == 1
+            if nargin == 2
                 objective = obj.objective;
             end
                                     
