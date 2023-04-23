@@ -97,7 +97,7 @@ end
 scatter(X0(1), X0(2), 200, 'ko')
 
 plot(xlim, [1, 1]*[-0.335220126444672], 'r--', 'LineWidth', 3)
-plot(xlim, [1, 1]*[-0.736103602023845], 'r', 'LineWidth', 3)
+plot(xlim, [1, 1]*[-0.885312572563149], 'r', 'LineWidth', 3)
 
 
 xlabel('$x_1$', 'interpreter', 'latex')

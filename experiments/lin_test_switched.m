@@ -63,7 +63,7 @@ for i = 1:length(order_list)
      status(1, i) = sol.status;
      solver_time(1, i) = sol.solver_time;
      if SAVE
-    save('lin_test_switched_test_time.mat', 'peak_estimate', 'status', 'order_list', 'epsilon_list', 'solver_time');
+    save('lin_test_switched_test_time_corr.mat', 'peak_estimate', 'status', 'order_list', 'epsilon_list', 'solver_time');
      end
 end
 
@@ -82,7 +82,7 @@ for e = 1:length(epsilon_list)
          status(e+1, i) = sol.status;
          solver_time(e+1, i) = sol.solver_time;
          if SAVE
-    save('lin_test_switched_test_time.mat', 'peak_estimate','status',  'order_list', 'epsilon_list', 'solver_time');
+    save('lin_test_switched_test_time_corr.mat', 'peak_estimate','status',  'order_list', 'epsilon_list', 'solver_time');
          end
     end
 end
