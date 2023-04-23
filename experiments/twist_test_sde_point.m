@@ -62,7 +62,7 @@ for i = 1:length(order_list)
     sol = PM.run(order_list(i));
     peak_estimate(1, i) = sol.obj_rec;
     solver_time(1, i) = sol.solver_time;
-    save('twist_sde_test_time.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
+    save('twist_sde_test_time_corr.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
 end
 
 %then do the chance-peak with a VP bound
@@ -75,7 +75,7 @@ for e = 1:length(epsilon_list)
         sol = PM.run(order_list(i));
         peak_estimate(e+1, i) = sol.obj_rec;
         solver_time(e+1, i) = sol.solver_time;
-        save('twist_sde_test_time.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
+        save('twist_sde_test_time_corr.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
     end
 end
 

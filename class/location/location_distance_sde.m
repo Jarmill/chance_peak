@@ -52,7 +52,7 @@ classdef location_distance_sde < location_sde & location_distance_interface
             len_out = obj.len_dual.v;
         end
         
-        function [obj_max, obj_con_ineq, obj_con_eq] = objective_con(obj, objective)
+        function [obj_max, obj_con_ineq, obj_con_eq] = objective_con(obj, d, objective)
             %OBJECTIVE_CON deal with the distance objective
             %bad code, violates Don't Repeat Yourself principles
             %                        
@@ -71,7 +71,7 @@ classdef location_distance_sde < location_sde & location_distance_interface
             
             %TODO: include support for putting objectives on initial and
             %occupation measures as well as the terminal measure
-            if nargin == 1
+            if nargin == 2
                 objective = obj.get_objective();
             end
                                     

@@ -66,7 +66,7 @@ classdef location_sde < location_interface
            
             [objective, cons_ineq, cons_eq] = obj.objective_con(d);
             
-            cons_ineq = [];
+
 
             %package up the output
             len_dual = struct;

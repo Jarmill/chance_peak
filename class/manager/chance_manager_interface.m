@@ -84,7 +84,7 @@ classdef (Abstract) chance_manager_interface < handle
                 cons_eq_obj = [(mass(mus)==1+p2);
                                 mom(s(1)) == 1-p2;
                                 mom(s(3)) == 2*p;
-                                svector==seye];
+                                svector==seye*(1+p2)]; %BUG: I missed the multiplication, was svector==seye originally
                             
                 objective = obj_max(1) + mom(s(2))*(r/2);
             else

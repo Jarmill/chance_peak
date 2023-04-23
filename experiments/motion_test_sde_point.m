@@ -55,13 +55,14 @@ for i = 1:length(order_list)
     sol = PM.run(order_list(i));
     peak_estimate(1, i) = sol.obj_rec;
     solver_time(1, i) = sol.solver_time;
-    save('motion_test_sde_point_time.mat', 'epsilon_list', 'order_list', 'peak_estimate', 'solver_time');
+    save('motion_test_sde_point_time_corr_cant.mat', 'epsilon_list', 'order_list', 'peak_estimate', 'solver_time');
 end
 
 %then do the chance-peak with a VP bound
 for e = 1:length(epsilon_list)
 % for e=1:1    
-    lsupp.bound_type = 'vp';
+%     lsupp.bound_type = 'vp';
+    lsupp.bound_type = 'cantelli';
     lsupp.epsilon = epsilon_list(e);
     for i = 1:length(order_list)
         PM = chance_peak_manager(lsupp, dyn, objective);
@@ -69,6 +70,6 @@ for e = 1:length(epsilon_list)
         peak_estimate(e+1, i) = sol.obj_rec;
         solver_time(e+1, i) = sol.solver_time;
     end
-    save('motion_test_sde_point_time.mat', 'epsilon_list', 'order_list', 'peak_estimate', 'solver_time');
+    save('motion_test_sde_point_time_corr_cant.mat', 'epsilon_list', 'order_list', 'peak_estimate', 'solver_time');
 end
 

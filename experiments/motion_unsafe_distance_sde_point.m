@@ -11,13 +11,13 @@ vars = struct;
 vars.t = t;
 vars.x = x;
 vars.y = y;
-X0 = [1; 1];
+X0 = [1; 0];
 T = 5;
 
 
 %unsafe set
 theta_c = 5*pi/4; 
-Cu = [-0.5; -0.75];
+Cu = [-0.8; -1];
 Ru = 0.5;
 
 c1f = Ru^2 - (y(1) - Cu(1)).^2 - (y(2) - Cu(2)).^2;
@@ -36,7 +36,8 @@ epsilon = 0.15;
 lsupp = chance_distance_support(vars, epsilon);
 % lsupp = lsupp.set_box(4);
 % lsupp = lsupp.set_box([-1, 3; -1.5, 2]);
-lsupp = lsupp.set_box([-1.1, 1.75; -1.5, 1.5]);
+box = [-1.25, 1.25; -1.5, 0.75];
+lsupp = lsupp.set_box(box);
 lsupp.X_init = X0;
 lsupp.Tmax = 5;
 lsupp.X_unsafe = unsafe_cons >= 0;
@@ -55,7 +56,7 @@ end
 
 %dynamics
 sigma = 0.1;
-f = [x(2); -(x(1) +x(2) - (1/3)*x(1)^3)];
+f = [x(2); -x(1) - (0.5).* x(1).^3 - x(2)];
 g = sigma*[0; 1];
 
 dyn = struct('f', f, 'g', g);
@@ -69,12 +70,13 @@ PM = chance_distance_manager(lsupp, dyn);
 %% perform the experiment
 if SOLVE
     
-epsilon_list = [0.15; 0.1; 0.05];
-order_list = 1:6;
+% epsilon_list = [0.15; 0.1; 0.05];
+% order_list = 1:6;
 
-% epsilon_list = [0.15];
+epsilon_list = [0.15];
 % order_list = 1:4;
 % order_list = 5;
+order_list = 3;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
 status = zeros(length(epsilon_list)+1, length(order_list));
 solver_time = zeros(length(epsilon_list)+1, length(order_list));
@@ -83,12 +85,13 @@ solver_time = zeros(length(epsilon_list)+1, length(order_list));
 %start with the mean
 for i = 1:length(order_list)
     lsupp.bound_type = 'mean';
+    lsupp.epsilon = 0.5;
     PM = chance_distance_manager(lsupp, dyn);
     sol = PM.run(order_list(i), T);
     peak_estimate(1, i) = sol.obj_rec;
     status(1, i) = sol.status;
     solver_time(1, i) = sol.solver_time;
-    save('flow_distance_sde_cant_test_time.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
+    save('motion_distance_sde_cant_test_time.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
 end
 
 %then do the chance-peak with a VP bound
@@ -103,7 +106,7 @@ for e = 1:length(epsilon_list)
         peak_estimate(e+1, i) = sol.obj_rec;
         status(e+1, i) = sol.status;
         solver_time(e+1, i) = sol.solver_time;
-        save('flow_distance_sde_cant_test_time.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
+        save('motion_distance_sde_cant_test_time.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
     end
 end
 
