@@ -46,8 +46,8 @@ ylabel('$x_2$', 'interpreter', 'latex')
 title('Stochastic Flow System', 'FontSize', 14)
 
 plot(xlim, [1, 1]*[-0.874424669027551], 'r-.', 'LineWidth', 3)
-plot(xlim, [1, 1]*-[1.116896593184430], 'r:', 'LineWidth', 3)
-plot(xlim, [1, 1]*-[1.16420596964602], 'r', 'LineWidth', 3)
+% plot(xlim, [1, 1]*-[1.116896593184430], 'r:', 'LineWidth', 3)
+plot(xlim, [1, 1]*-[1.57389344270189], 'r', 'LineWidth', 3)
 
 % [0.874424669027551;1.16420596964602]
 % 

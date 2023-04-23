@@ -56,7 +56,8 @@ view(3)
 
 
 %% plot the patches
-chance_p = [0.820253508023993;0.975507232859090];
+% chance_p = [0.820253508023993;0.975507232859090];
+chance_p = [0.820253508023993;1.32019648246837];
 xl = xlim;
 yl = ylim;
 patch(xl([1,1,2,2,1]), yl([1,2,2,1,1]), chance_p(1)*ones(1, 5), 'r', 'EdgeColor', 'None', 'FaceAlpha', 0.5)
