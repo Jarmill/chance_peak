@@ -83,6 +83,7 @@ solver_time = zeros(length(epsilon_list)+1, length(order_list));
 %start with the mean
 for i = 1:length(order_list)
     lsupp.bound_type = 'mean';
+    lsupp.epsilon = 0.5;
     PM = chance_distance_manager(lsupp, dyn);
     sol = PM.run(order_list(i), T);
     peak_estimate(1, i) = sol.obj_rec;
