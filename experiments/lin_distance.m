@@ -1,6 +1,6 @@
-%requires https://github.com/Jarmill/distance
 mset clear
 clear all
+SAVE = 0;
 %% variables
 
 mpol('t', 1, 1)
@@ -11,9 +11,22 @@ vars = struct;
 vars.t = t;
 vars.x = x;
 vars.y = y;
-X0 = [1; 0];
-T = 5;
 
+X0 = [0; 1];
+
+%% testing peak estimation
+
+%dynamics
+f1 = [-5, -4; -1, -2]*x/2;
+g1 = [0; 0.5*x(2)]/2;
+
+
+f2 = [-2, -4; 5, -2]*x/2;
+g2 = g1;
+
+dyn = struct;
+dyn.f = {f2};
+dyn.g = {g2};
 
 %unsafe set
 % theta_c = 5*pi/4; 
@@ -31,20 +44,18 @@ w_c = [cos(theta_c); sin(theta_c)];
 c2f = w_c(1)*(y(1) - Cu(1)) + w_c(2) * (y(2) - Cu(2)); 
 % c2f = [];
 unsafe_cons = [c1f; c2f];
-% unsafe_cons = [c2f];
 
-% Ru = 0.2;
-% unsafe_cons = [Ru^2 - (x-Cu).^2 ];
+% dyn = struct('f', {f1, f2}, 'g', {g1, g2});
 
-epsilon = 0.15;
+
+
 
 %% location support 
 
-% lsupp = loc_support(vars);
-lsupp = chance_distance_support(vars, epsilon);
+lsupp = chance_distance_support(vars);
 % lsupp = lsupp.set_box(4);
 % lsupp = lsupp.set_box([-1, 3; -1.5, 2]);
-box = [-1.25, 1.25; -1.5, 0.75];
+box = [-1.25, 0.5; -1.5, 1];
 lsupp = lsupp.set_box(box);
 lsupp.X_init = X0;
 lsupp.Tmax = 5;
@@ -52,39 +63,18 @@ lsupp.X_unsafe = unsafe_cons >= 0;
 lsupp.dist = (x-y)'*(x-y);
 lsupp.epsilon = 0.15;
 
-
-CHANCE = 1;
-if CHANCE
-    lsupp.bound_type = 'cantelli';
-%     lsupp.bound_type = 'vp';
-else
-    lsupp.bound_type = 'mean';
-end
-%% testing peak estimation
-
-%dynamics
-sigma = 0.1;
-f = [x(2); -x(1) - (0.5).* x(1).^3 - x(2)];
-g = sigma*[0; 1];
-
-dyn = struct('f', f, 'g', g);
-
-% objective = -x(2);
+% objective = -x(1);
 
 SOLVE = 1;
 
-PM = chance_distance_manager(lsupp, dyn);
+% if SOLVE
+% PM = peak_manager(lsupp, f, objective);
+% PM = chance_peak_manager(lsupp, dyn, objective);
 
-%% perform the experiment
-if SOLVE
-    
-% epsilon_list = [0.15; 0.1; 0.05];
-% order_list = 1:6;
-
-epsilon_list = [0.15];
+epsilon_list = [0.15; 0.1; 0.05];
+% epsilon_list = [0.15];
 order_list = 1:6;
-% order_list = 5;
-% order_list = 7;
+% order_list = 1:4;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
 status = zeros(length(epsilon_list)+1, length(order_list));
 solver_time = zeros(length(epsilon_list)+1, length(order_list));
@@ -95,32 +85,33 @@ for i = 1:length(order_list)
     lsupp.bound_type = 'mean';
     lsupp.epsilon = 0.5;
     PM = chance_distance_manager(lsupp, dyn);
-    sol = PM.run(order_list(i), T);
+    sol = PM.run(order_list(i));
     peak_estimate(1, i) = sol.obj_rec;
-    status(1, i) = sol.status;
-    solver_time(1, i) = sol.solver_time;
-    save('motion_distance_sde_test_time_b.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
+     status(1, i) = sol.status;
+     solver_time(1, i) = sol.solver_time;
+     if SAVE
+    save('lin_test_dist_test_time_corr.mat', 'peak_estimate', 'status', 'order_list', 'epsilon_list', 'solver_time');
+     end
 end
+
+disp(peak_estimate)
 
 %then do the chance-peak with a VP bound
 for e = 1:length(epsilon_list)
 % for e=1:1    
-%     lsupp.bound_type = 'cantelli';
     lsupp.bound_type = 'vp';
+%     lsupp.bound_type = 'cantelli';
     lsupp.epsilon = epsilon_list(e);
     for i = 1:length(order_list)
-       PM = chance_distance_manager(lsupp, dyn);
-        sol = PM.run(order_list(i), T);
+        PM = chance_distance_manager(lsupp, dyn);
+        sol = PM.run(order_list(i));
         peak_estimate(e+1, i) = sol.obj_rec;
-        status(e+1, i) = sol.status;
-        solver_time(e+1, i) = sol.solver_time;
-        save('motion_distance_sde_test_time_b.mat', 'peak_estimate', 'order_list', 'epsilon_list', 'solver_time');
+         status(e+1, i) = sol.status;
+         solver_time(e+1, i) = sol.solver_time;
+         if SAVE
+    save('lin_test_dist_test_time_corr.mat', 'peak_estimate','status',  'order_list', 'epsilon_list', 'solver_time');
+         end
     end
 end
-
-
-end
-
-
 
 

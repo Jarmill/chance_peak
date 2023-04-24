@@ -14,6 +14,9 @@ classdef (Abstract) chance_support_interface
         %distributions and epsilon < 1/6)
         
         p_supp = []; %bounds on p inside X (if needed)
+        
+        lam_handle = []; %moment handle on the parameter lambda: 
+        %lam_handle(d) -> moment of order d: E[lam^d]
     end
     
     methods

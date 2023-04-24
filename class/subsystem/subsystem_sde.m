@@ -8,6 +8,9 @@ classdef subsystem_sde <subsystem_interface
         %sde properties
         g = 0;
         jump = [];
+        lam_handle = @(d) 0;
+        DISCRETE_TIME=0;
+        Tmax = 1;
     end
 
     properties(Access = protected)
@@ -51,6 +54,11 @@ classdef subsystem_sde <subsystem_interface
             end
 
             obj.g_ = dyn.g;
+            
+            obj.DISCRETE_TIME = loc_supp.DISCRETE_TIME;
+            
+            obj.lam_handle = loc_supp.lam_handle;
+            obj.Tmax = loc_supp.Tmax;
         end
         
         %% Constraints                       
@@ -59,12 +67,56 @@ classdef subsystem_sde <subsystem_interface
             %Lie derivatives (continuous systems only)
             
             %no box inputs, simple to perform
-             Ay_f = obj.meas_occ.mom_lie(d, obj.get_vars, obj.f);
-             Ay_g = obj.meas_occ.mom_hess(d, obj.get_vars, obj.g);
-             
-             %Lv = v_t + f' grad v + 0.5 g' hess v g
-             Ay = Ay_f + 0.5*Ay_g;
-           
+            
+            if obj.DISCRETE_TIME
+                
+                %terrible code, hack. fix later, put this in measures
+                v = mmon([obj.vars.t; obj.vars.x], d);
+                if ~isempty(obj.vars.t)                
+                    Rv = subs(v, [obj.vars.t; obj.vars.x], [obj.vars.t+1/obj.Tmax; obj.f]);
+                    Rv_int = integrate_var(Rv, obj.vars.lam, obj.lam_handle);
+    %             f_curr = obj.var_sub(vars_old, f_old);
+    %             Rv = subs(v, [obj.vars.t; obj.vars.x], ...
+    %                 [obj.vars.t+t_shift; f_curr]);
+
+
+                    Rv_int_subs = subs_vars(Rv_int, [obj.vars.t; obj.vars.x], [obj.meas_occ.vars.t; obj.meas_occ.vars.x]);
+                    v_subs = subs_vars(v, [obj.vars.t; obj.vars.x], [obj.meas_occ.vars.t; obj.meas_occ.vars.x]);
+    %             Rv_int = integrate_var(Rv, [obj.vars.lam], lam_handle);
+
+                    %divide by Tmax to get sensible integrals
+                    %elapsed time = 1 (when compressed to 1/Tmax)
+                    Ay = (mom(Rv_int_subs)-mom(v_subs));
+
+                    Ay = Ay *(1/obj.Tmax);
+                else
+                    Rv = subs(v, [obj.vars.x], [obj.f]);
+                    Rv_int = integrate_var(Rv, obj.vars.lam, obj.lam_handle);
+                    
+                    Rv_int_subs = subs_vars(Rv_int, [obj.vars.x], [ obj.meas_occ.vars.x]);
+                    v_subs = subs_vars(v, [obj.vars.x], [obj.meas_occ.vars.x]);
+    %             Rv_int = integrate_var(Rv, [obj.vars.lam], lam_handle);
+
+                    %divide by Tmax to get sensible integrals
+                    %elapsed time = 1 (when compressed to 1/Tmax)
+                    Ay = (mom(Rv_int_subs)-mom(v_subs));
+                end
+                
+                
+%                 Ay_push = obj.meas_occ.mom_push_integrate(d, obj.vars, ...
+%                     obj.f, obj.lam_handle, 1/obj.Tmax);
+%                 Ay_orig = obj.meas_occ.mom_monom(d);
+%                 
+%                 Ay = Ay_push - Ay_orig;
+                    
+            else
+                Ay_f = obj.meas_occ.mom_lie(d, obj.get_vars, obj.f);
+                Ay_g = obj.meas_occ.mom_hess(d, obj.get_vars, obj.g);
+
+                %Lv = v_t + f' grad v + 0.5 g' hess v g
+                Ay = Ay_f + 0.5*Ay_g;
+            end
+        
             
         end       
 

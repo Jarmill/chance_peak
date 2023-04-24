@@ -25,6 +25,10 @@ classdef location_sde < location_interface
                 dyn.f = {dyn.f};
             end
 
+            if ~isfield(dyn, 'g')
+                dyn.g = 0;
+            end
+            
             if ~iscell(dyn.g)
                 dyn.g= {dyn.g};
             end
@@ -32,7 +36,7 @@ classdef location_sde < location_interface
             obj@location_interface(loc_supp, dyn.f, objective, id);
            
             
-            if ~loc_supp.TIME_INDEP % && obj.supp.SCALE_TIME
+            if ~loc_supp.TIME_INDEP  && ~obj.supp.DISCRETE_TIME
                 %scale for time if time is a variable
                 Tmax = loc_supp.Tmax;
                 for i = 1:length(dyn.f)
@@ -66,7 +70,7 @@ classdef location_sde < location_interface
            
             [objective, cons_ineq, cons_eq] = obj.objective_con(d);
             
-
+            
 
             %package up the output
             len_dual = struct;
