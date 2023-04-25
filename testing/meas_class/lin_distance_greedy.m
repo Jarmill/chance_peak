@@ -50,7 +50,7 @@ theta_c = 5*pi/4;
 % Ru = 0.4;
 Ru = 0.1;
 % Cu = [-0.8; -0.8];
-Cu = [-1;  -1];
+Cu = [-0.5;  -0.5];
 
 % theta_c = 5*pi/4;
 % Ru = 0.3;
@@ -74,7 +74,7 @@ unsafe_cons = [c1f; c2f];
 lsupp = chance_distance_support(vars);
 % lsupp = lsupp.set_box(4);
 % lsupp = lsupp.set_box([-1, 3; -1.5, 2]);
-box = [-1.25, 1; -1, 1];
+box = [-0.75, 0.5; -1, 1];
 lsupp = lsupp.set_box(box);
 lsupp.X_init = X0;
 lsupp.Tmax = 5;
@@ -91,12 +91,12 @@ SOLVE = 1;
 % PM = peak_manager(lsupp, f, objective);
 % PM = chance_peak_manager(lsupp, dyn, objective);
 
-epsilon_list = [0.15; 0.1; 0.05];
-% epsilon_list = [0.15];
-order_list = 1:6;
+% epsilon_list = [0.15; 0.1; 0.05];
+epsilon_list = [0.15];
+% order_list = 1:6;
 % order_list = 4;
 DO_MEAN = 1;
-% order_list = 6;
+order_list = 1:5;
 peak_estimate = zeros(length(epsilon_list)+1, length(order_list));
 status = zeros(length(epsilon_list)+1, length(order_list));
 solver_time = zeros(length(epsilon_list)+1, length(order_list));
@@ -112,7 +112,7 @@ for i = 1:length(order_list)
      status(1, i) = sol.status;
      solver_time(1, i) = sol.solver_time;
      if SAVE
-    save('lin_cant_dist_test_time_corr.mat', 'peak_estimate', 'status', 'order_list', 'epsilon_list', 'solver_time');
+    save('lin_test_dist_test_time_corr.mat', 'peak_estimate', 'status', 'order_list', 'epsilon_list', 'solver_time');
      end
 end
 end
@@ -122,8 +122,8 @@ disp(peak_estimate)
 %then do the chance-peak with a VP bound
 for e = 1:length(epsilon_list)
 % for e=1:1    
-%     lsupp.bound_type = 'vp';
-     lsupp.bound_type = 'cantelli';
+    lsupp.bound_type = 'vp';
+%      lsupp.bound_type = 'cantelli';
     lsupp.epsilon = epsilon_list(e);
     for i = 1:length(order_list)
         PM = chance_distance_manager(lsupp, dyn);
@@ -132,7 +132,7 @@ for e = 1:length(epsilon_list)
          status(e+1, i) = sol.status;
          solver_time(e+1, i) = sol.solver_time;
          if SAVE
-    save('lin_cant_dist_test_time_corr.mat', 'peak_estimate','status',  'order_list', 'epsilon_list', 'solver_time');
+    save('lin_test_dist_test_time_corr.mat', 'peak_estimate','status',  'order_list', 'epsilon_list', 'solver_time');
          end
     end
 end
