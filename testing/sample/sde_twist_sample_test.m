@@ -23,7 +23,8 @@ T =5;
 %Options
 Nperiod = ceil(T/dt);
 Antithetic = true;
-NTrials = 500;
+% NTrials = 500;
+NTrials = 1000;
 
 [x_smp,t_smp] = simByEuler(obj, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials,...
     'Antithetic', Antithetic);
@@ -57,11 +58,15 @@ view(3)
 
 %% plot the patches
 % chance_p = [0.820253508023993;0.975507232859090];
-chance_p = [0.820253508023993;1.32019648246837];
+%degree 6 bounds
+chance_p = [0.820253508023993; %mean
+    0.973259607789189; %CVAR
+    1.32019648246837]; %VP
 xl = xlim;
 yl = ylim;
 patch(xl([1,1,2,2,1]), yl([1,2,2,1,1]), chance_p(1)*ones(1, 5), 'r', 'EdgeColor', 'None', 'FaceAlpha', 0.5)
-patch(xl([1,1,2,2,1]), yl([1,2,2,1,1]), chance_p(2)*ones(1, 5), 'r', 'EdgeColor', 'None')
+patch(xl([1,1,2,2,1]), yl([1,2,2,1,1]), chance_p(2)*ones(1, 5), 'k', 'EdgeColor', 'None', 'FaceAlpha', 0.5)
+patch(xl([1,1,2,2,1]), yl([1,2,2,1,1]), chance_p(3)*ones(1, 5), 'r', 'EdgeColor', 'None')
 
 
 % plot(xlim, [1, 1]*[-0.874424669027551], 'r--', 'LineWidth', 3)
