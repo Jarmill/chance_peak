@@ -139,7 +139,7 @@ classdef subsystem_sde <subsystem_interface
             vx = diff(v, obj.vars.x);
             vxx = diff(vx', obj.vars.x);
             
-            obj.dual.Lv = vx*obj.f + obj.g'*vxx+obj.g;
+            obj.dual.Lv = vx*obj.f + obj.g'*vxx*obj.g/2;
             
             if ~isempty(obj.vars.t)
                 obj.dual.Lv = obj.dual.Lv + diff(v, obj.vars.t);
