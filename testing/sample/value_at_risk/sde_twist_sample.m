@@ -41,12 +41,26 @@ save('twist_traj.mat', 'p_smp', 't_smp');
 epsilon_list = [0.5, 0.15, 0.1, 0.05];
 max_smp = max(p_smp, [], 2);
 q_smp = quantile(p_smp', 1-epsilon_list);
+%% CVAR bounds
 
+cvar_smp = zeros(size(q_smp));
+for i = 1:size(cvar_smp, 1)
+    for j = 1:size(cvar_smp, 2)
+        pcurr = p_smp(j, :);
+        cvar_smp(i, j) = mean(pcurr(pcurr>= q_smp(i, j)), 2);
+    end    
+end
+
+%% maximum outputs
 max_q = zeros(length(epsilon_list), 1);
+max_cvar = zeros(size(max_q));
 for i = 1:length(max_q)
     max_q(i) = max(q_smp(i, :));
+    max_cvar(i) = max(cvar_smp(i, :));
 end
-save('twist_traj_quantile.mat', 'max_q', 'epsilon_list', 'q_smp', 't_smp', 'max_smp')
+
+
+save('twist_traj_quantile.mat', 'max_cvar', 'max_q', 'epsilon_list', 'q_smp', 't_smp', 'max_smp')
 
 
 %% plot
