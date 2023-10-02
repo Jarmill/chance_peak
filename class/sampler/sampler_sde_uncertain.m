@@ -57,7 +57,7 @@ classdef sampler_sde_uncertain < sampler_uncertain_interface
 
 %             Antithetic = 1;
             NTrials = 1;
-            dt = 1e-3;
+            dt = 1e-5;
 
 %             simByEuler(obj, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials,...
 %       'Antithetic', Antithetic);
@@ -95,8 +95,6 @@ classdef sampler_sde_uncertain < sampler_uncertain_interface
                 %do not exceed Tmax
                 time_track_trunc = min(time_track, Tmax - time_total);
 
-                Nperiod = ceil(time_track_trunc/dt);
-
                 curr_sys = obj.loc.sys{curr_sys_ind};
                 w_curr = obj.sampler.w();
                 b_curr = rand(length(obj.loc.vars.b), 1);
@@ -110,6 +108,7 @@ classdef sampler_sde_uncertain < sampler_uncertain_interface
 %                 sde_curr
                 %simulate the current system
                 if obj.FINE
+                    Nperiod = ceil(time_track_trunc/dt);
                     curr_ode_options =   odeset('Events',curr_event, 'RelTol', 1e-7, ...
                                                   'AbsTol', 1e-8, 'MaxStep', 0.01);
                 else
@@ -117,12 +116,18 @@ classdef sampler_sde_uncertain < sampler_uncertain_interface
                 end
 
 
-                sde_curr = sde(curr_f, curr_g, 'StartState', x0_curr);    % dX = F(t,X)dt + G(t,X)dW
-
-%                 [time_curr, x_curr] = obj.odefcn(curr_f, [0, time_track_trunc], x0_curr, curr_ode_options);              
-
-
-                [x_curr,time_curr] = simByEuler(sde_curr, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials);
+                %MATLAB Financial toolbox for sampling
+%                 sde_curr = sde(curr_f, curr_g, 'StartState', x0_curr);    % dX = F(t,X)dt + G(t,X)dW
+%                 [x_curr,time_curr] = simByEuler(sde_curr, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials);
+                
+                %SDETOOLS for sampling
+                curr_sde_options = sdeset('EventsFun', curr_event, 'SDEType', 'Ito', ...
+                    'DiagonalNoise', 'yes', 'ConstGFUN', 'yes');
+                [x_curr,W,TE,YE,WE,IE] = sde_euler(curr_f,curr_g,0:dt:time_track_trunc,...
+                    x0_curr,curr_sde_options);
+                
+                time_curr = (1:(size(x_curr, 1)-1))*dt;
+                time_total = time_curr(end);
                 %save current trajectory
                 %check indices/dimensions
                 x0_curr = x_curr(end, :)';

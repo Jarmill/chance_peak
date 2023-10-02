@@ -148,6 +148,16 @@ classdef subsystem_sde <subsystem_interface
                                    
             obj.nn_ = obj.dual.nn;
         end    
+        
+        %% sampling
+                
+        function [event_eval, terminal, direction] = supp_event(obj, t, x)
+            %event function for @ode15 or other solver
+            [event_eval, terminal, direction] = supp_event@subsystem_interface(obj, t, x);
+            
+            %stop integrating when the system falls outside support
+            event_eval = 2*event_eval-1;
+        end
     end
 end
 
