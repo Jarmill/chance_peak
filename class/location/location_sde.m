@@ -242,6 +242,7 @@ classdef location_sde < location_interface
         
         
         %% Sampling ???
+
     end
 end
 
