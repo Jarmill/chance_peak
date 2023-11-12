@@ -16,7 +16,7 @@ G = @(t,X) sigma * [0; 1];
 
 Cu = [-1, -1];
 Ru = 0.1;
-theta_c = pi/4;
+theta_c = 5*pi/4;
 
 
 pper = @(x_in) aff_half_circ_dist(x_in, Ru, theta_c, Cu);
@@ -47,11 +47,11 @@ while i_curr < NTrials
     p_smp(:, i_curr+ (1:Nblock)) = -p(x_smp).^2;
     i_curr = i_curr + Nblock;
     currt = toc;
-    fprintf('%d out of %d \t time: %0.2f\n', i_curr, Nblock, currt);
+    fprintf('%d out of %d \t time: %0.2f\n', i_curr, NTrials, currt);
 end
 toc
 
-save('dist_lin_traj.mat', 'p_smp', 't_smp');
+save('dist_lin_traj_rev.mat', 'p_smp', 't_smp');
 % x_smp = squeeze(x_smp);
 
 %% quantile bounds

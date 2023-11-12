@@ -86,8 +86,8 @@ x_dist_eps = Rot_mat*x_dist_eps_align + Cu;
 
     
 plot(x_dist_mean(1, :), x_dist_mean(2, :), 'r-.', 'DisplayName', 'Dist. Mean', 'LineWidth', 2)
-plot(x_dist_cvar(1, :), x_dist_cvar(2, :), 'r:', 'DisplayName', 'Dist. CVAR 85%', 'LineWidth', 2)
-plot(x_dist_eps(1, :), x_dist_eps(2, :), 'r', 'DisplayName', 'Dist. VP 85%', 'LineWidth', 2)
+plot(x_dist_cvar(1, :), x_dist_cvar(2, :), 'k:', 'DisplayName', 'Dist. ES \epsilon=0.15', 'LineWidth', 2)
+plot(x_dist_eps(1, :), x_dist_eps(2, :), 'r', 'DisplayName', 'Dist. VP \epsilon=0.15', 'LineWidth', 2)
 
 
 %TODO: plot the distance contour

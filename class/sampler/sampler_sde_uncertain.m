@@ -57,7 +57,7 @@ classdef sampler_sde_uncertain < sampler_uncertain_interface
 
 %             Antithetic = 1;
             NTrials = 1;
-            dt = 1e-5;
+            dt = 1e-3;
 
 %             simByEuler(obj, Nperiod, 'DeltaTime', dt, 'NTrials', NTrials,...
 %       'Antithetic', Antithetic);
@@ -88,7 +88,7 @@ classdef sampler_sde_uncertain < sampler_uncertain_interface
                 else
                     %is there any switching? If not, sample for a random
                     %interval of time
-                    time_track = exprnd(obj.mu, 1, 1);
+                    time_track = max(exprnd(obj.mu, 1, 1), dt);
                 end
 
 
@@ -132,7 +132,7 @@ classdef sampler_sde_uncertain < sampler_uncertain_interface
                 %check indices/dimensions
                 x0_curr = x_curr(end, :)';
                 x_accum = [x_accum; x_curr];
-                time_accum = [time_accum; time_curr + time_total];
+                time_accum = [time_accum, time_curr + time_total];
 
                 time_total = time_total + time_curr(end);
 
